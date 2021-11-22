@@ -19,7 +19,7 @@ class PaymentProviderImpl(private val customerService: CustomerService) : Paymen
         return performPaymentOverNetwork()
     }
 
-    //For demonstration purposes
+    // For demonstration purposes
     @Throws(NetworkException::class)
     private fun performPaymentOverNetwork(): Boolean {
         // Whole bunch of network stuff

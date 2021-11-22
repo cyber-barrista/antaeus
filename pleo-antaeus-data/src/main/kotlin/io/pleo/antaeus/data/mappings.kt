@@ -8,8 +8,8 @@ package io.pleo.antaeus.data
 import io.pleo.antaeus.models.dto.Currency
 import io.pleo.antaeus.models.dto.Customer
 import io.pleo.antaeus.models.dto.Invoice
-import io.pleo.antaeus.models.status.InvoiceStatus
 import io.pleo.antaeus.models.dto.Money
+import io.pleo.antaeus.models.status.InvoiceStatus
 import org.jetbrains.exposed.sql.ResultRow
 
 fun ResultRow.toInvoice(): Invoice = Invoice(

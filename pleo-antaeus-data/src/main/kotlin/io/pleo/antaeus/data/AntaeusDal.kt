@@ -10,17 +10,17 @@ package io.pleo.antaeus.data
 import io.pleo.antaeus.models.dto.Currency
 import io.pleo.antaeus.models.dto.Customer
 import io.pleo.antaeus.models.dto.Invoice
+import io.pleo.antaeus.models.dto.Money
 import io.pleo.antaeus.models.status.InvoiceStatus
 import io.pleo.antaeus.models.status.InvoiceStatus.PAID
-import io.pleo.antaeus.models.dto.Money
-import io.pleo.antaeus.models.status.PaymentStatus.SUCCEED
 import io.pleo.antaeus.models.status.PaymentStatus.FAILED
+import io.pleo.antaeus.models.status.PaymentStatus.SUCCEED
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class AntaeusDal(private val db: Database) {
     fun fetchInvoice(id: Int): Invoice? {
@@ -49,7 +49,6 @@ class AntaeusDal(private val db: Database) {
                 .map { it.toInvoice() }
         }
     }
-
 
     fun createInvoice(amount: Money, customer: Customer, status: InvoiceStatus = InvoiceStatus.PENDING): Invoice? {
         val id = transaction(db) {
@@ -97,7 +96,7 @@ class AntaeusDal(private val db: Database) {
     fun enrollSuccessfulPayment(invoiceId: Int) {
         transaction(db) {
             InvoiceTable
-                .update( { InvoiceTable.id eq invoiceId} ) { it[status] = PAID.name }
+                .update({ InvoiceTable.id eq invoiceId }) { it[status] = PAID.name }
 
             PaymentTable
                 .insert {
