@@ -12,7 +12,9 @@ import io.pleo.antaeus.core.exceptions.EntityNotFoundException
 import io.pleo.antaeus.core.services.CustomerService
 import io.pleo.antaeus.core.services.InvoiceService
 import io.pleo.antaeus.core.services.PaymentService
+import io.pleo.antaeus.models.status.InvoiceStatus.PENDING
 import mu.KotlinLogging
+import java.time.Instant
 
 private val logger = KotlinLogging.logger {}
 
@@ -70,7 +72,9 @@ class AntaeusRest(
                         }
 
                         post("pay") {
+                            // TODO Make non-blocking for scaling purposes
                             paymentService.payForPendingInvoices()
+                            it.json("Attempt of paying for $PENDING invoices finished at ${Instant.now()}")
                         }
                     }
 
