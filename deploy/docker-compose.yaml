@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  payment-manager:
+    image: payment-manager:latest
+    environment:
+      CRON_FOR_PAYMENT: "0 0 1 * * root curl -X POST antaeus:7000/rest/v1/invoices/pay"
+
+  antaeus:
+    image: antaeus:latest
+    restart: on-failure
+    ports:
+      - "7000:7000"

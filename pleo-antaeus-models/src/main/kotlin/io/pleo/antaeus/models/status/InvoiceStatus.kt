@@ -1,4 +1,4 @@
-package io.pleo.antaeus.models
+package io.pleo.antaeus.models.status
 
 enum class InvoiceStatus {
     PENDING,
