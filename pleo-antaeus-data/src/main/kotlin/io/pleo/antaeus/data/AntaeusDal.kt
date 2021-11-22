@@ -7,15 +7,19 @@
 
 package io.pleo.antaeus.data
 
-import io.pleo.antaeus.models.Currency
-import io.pleo.antaeus.models.Customer
-import io.pleo.antaeus.models.Invoice
-import io.pleo.antaeus.models.InvoiceStatus
-import io.pleo.antaeus.models.Money
+import io.pleo.antaeus.models.dto.Currency
+import io.pleo.antaeus.models.dto.Customer
+import io.pleo.antaeus.models.dto.Invoice
+import io.pleo.antaeus.models.status.InvoiceStatus
+import io.pleo.antaeus.models.status.InvoiceStatus.PAID
+import io.pleo.antaeus.models.dto.Money
+import io.pleo.antaeus.models.status.PaymentStatus.SUCCEED
+import io.pleo.antaeus.models.status.PaymentStatus.FAILED
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class AntaeusDal(private val db: Database) {
@@ -37,6 +41,15 @@ class AntaeusDal(private val db: Database) {
                 .map { it.toInvoice() }
         }
     }
+
+    fun fetchInvoicesByStatus(status: InvoiceStatus): List<Invoice> {
+        return transaction(db) {
+            InvoiceTable
+                .select { InvoiceTable.status eq status.name }
+                .map { it.toInvoice() }
+        }
+    }
+
 
     fun createInvoice(amount: Money, customer: Customer, status: InvoiceStatus = InvoiceStatus.PENDING): Invoice? {
         val id = transaction(db) {
@@ -79,5 +92,28 @@ class AntaeusDal(private val db: Database) {
         }
 
         return fetchCustomer(id)
+    }
+
+    fun enrollSuccessfulPayment(invoiceId: Int) {
+        transaction(db) {
+            InvoiceTable
+                .update( { InvoiceTable.id eq invoiceId} ) { it[status] = PAID.name }
+
+            PaymentTable
+                .insert {
+                    it[this.invoiceId] = invoiceId
+                    it[this.status] = SUCCEED.name
+                }
+        }
+    }
+
+    fun logFailedPayment(invoiceId: Int) {
+        transaction(db) {
+            PaymentTable
+                .insert {
+                    it[this.invoiceId] = invoiceId
+                    it[this.status] = FAILED.name
+                }
+        }
     }
 }

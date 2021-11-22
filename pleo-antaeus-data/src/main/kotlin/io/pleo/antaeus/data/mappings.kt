@@ -5,11 +5,11 @@
 
 package io.pleo.antaeus.data
 
-import io.pleo.antaeus.models.Currency
-import io.pleo.antaeus.models.Customer
-import io.pleo.antaeus.models.Invoice
-import io.pleo.antaeus.models.InvoiceStatus
-import io.pleo.antaeus.models.Money
+import io.pleo.antaeus.models.dto.Currency
+import io.pleo.antaeus.models.dto.Customer
+import io.pleo.antaeus.models.dto.Invoice
+import io.pleo.antaeus.models.status.InvoiceStatus
+import io.pleo.antaeus.models.dto.Money
 import org.jetbrains.exposed.sql.ResultRow
 
 fun ResultRow.toInvoice(): Invoice = Invoice(

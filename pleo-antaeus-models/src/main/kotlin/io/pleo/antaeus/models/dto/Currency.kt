@@ -1,4 +1,4 @@
-package io.pleo.antaeus.models
+package io.pleo.antaeus.models.dto
 
 enum class Currency {
     EUR,
