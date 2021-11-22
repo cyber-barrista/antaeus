@@ -22,7 +22,7 @@ object InvoiceTable : Table() {
     val currency = varchar("currency", 3)
     val value = decimal("value", 1000, 2)
     val customerId = reference("customer_id", CustomerTable.id)
-    val status = text("status").check { it.inList(stringValues<InvoiceStatus>()) }
+    val status = text("status").check { it inList stringValues<InvoiceStatus>() }
 }
 
 object CustomerTable : Table() {
